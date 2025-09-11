@@ -19,11 +19,14 @@ export class Task {
   @Column({type: 'timestamp', nullable: true})
   dueDate: Date
 
-  @Column({name: 'user_id', type: 'uuid'})
-  userId: string
+  @Column({name: 'user_id', type: 'int', nullable: true})
+  userId: number
 
-  @ManyToOne(() => User, (user) => user.tasks)
-  @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
+  @ManyToOne(() => User, (user) => user.tasks,{
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE"
+  })
+  @JoinColumn({name: 'user_id', referencedColumnName: 'identifyNumber'})
   user: User
 
   @CreateDateColumn()

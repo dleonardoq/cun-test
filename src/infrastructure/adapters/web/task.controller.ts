@@ -9,6 +9,7 @@ import {
   Query,
   ValidationPipe,
   UsePipes,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TaskUseCases } from '../../../application/use-cases/task.use-cases';
 import { CreateTaskDto } from '../../../shared/dtos/create-task.dto';
@@ -32,7 +33,7 @@ export class TaskController {
 
   @Get('user/:userId')
   async getTasksByUserId(
-    @Param('userId') userId: string,
+    @Param('userId', ParseIntPipe) userId: number,
     @Query() filter: TaskFilterDto,
   ) {
     return await this.taskUseCases.getTasksByUserId(userId, filter);

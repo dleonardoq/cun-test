@@ -24,7 +24,7 @@ export class TaskRepository implements TaskRepositoryInterface {
     })
   }
 
-  async findByUserId(userId: string, status?: TaskStatus): Promise<Task[]> {
+  async findByUserId(userId: number, status?: TaskStatus): Promise<Task[]> {
     const whereCondition: any = { userId, isDeleted: false }
     if (status) {
       whereCondition.status = status

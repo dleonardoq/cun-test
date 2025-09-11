@@ -8,6 +8,7 @@ import {
   Param,
   ValidationPipe,
   UsePipes,
+  ParseIntPipe
 } from '@nestjs/common';
 import { UserUseCases } from '../../../application/use-cases/user.use-cases';
 import { CreateUserDto } from '../../../shared/dtos/create-user.dto';
@@ -29,20 +30,20 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string) {
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
     return await this.userUseCases.getUserById(id);
   }
 
   @Put(':id')
   async updateUser(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return await this.userUseCases.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id', ParseIntPipe) id: number) {
     await this.userUseCases.deleteUser(id);
     return { message: 'User deleted successfully' };
   }

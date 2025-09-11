@@ -35,7 +35,7 @@ export class TaskUseCases {
     return task;
   }
 
-  async getTasksByUserId(userId: string, filter?: TaskFilterDto): Promise<Task[]> {
+  async getTasksByUserId(userId: number, filter?: TaskFilterDto): Promise<Task[]> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');

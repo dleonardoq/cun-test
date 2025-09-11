@@ -16,8 +16,8 @@ export class UserRepository implements UserRepositoryInterface {
     return await this.userRepository.save(newUser);
   }
 
-  async findById(id: string): Promise<User | null> {
-    return await this.userRepository.findOne({ where: { id } });
+  async findById(identifyNumber: number): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { identifyNumber} });
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -28,12 +28,12 @@ export class UserRepository implements UserRepositoryInterface {
     return await this.userRepository.find();
   }
 
-  async update(id: string, user: Partial<User>): Promise<User> {
-    await this.userRepository.update(id, user);
-    return await this.findById(id);
+  async update(identifyNumber: number, user: Partial<User>): Promise<User> {
+    await this.userRepository.update({ identifyNumber }, user);
+    return await this.findById(identifyNumber);
   }
 
-  async delete(id: string): Promise<void> {
-    await this.userRepository.delete(id);
+  async delete(identifyNumber: number): Promise<void> {
+    await this.userRepository.delete({ identifyNumber });
   }
 }
