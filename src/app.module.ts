@@ -1,14 +1,12 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { User } from './domain/entities/user.entity';
-import { Task } from './domain/entities/task.entity';
-import { UserController } from './infrastructure/adapters/web/user.controller';
-import { TaskController } from './infrastructure/adapters/web/task.controller';
-import { UserModule } from './infrastructure/adapters/persistence/user.module';
-import { TaskModule } from './infrastructure/adapters/persistence/task.module';
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { User } from './domain/entities/user.entity'
+import { Task } from './domain/entities/task.entity'
+import { UserModule } from './infrastructure/adapters/persistence/user.module'
+import { TaskModule } from './infrastructure/adapters/persistence/task.module'
 
 @Module({
   imports: [
