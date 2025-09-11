@@ -2,13 +2,13 @@
 GET http://localhost:3001/tasks
 
 ### Get task by id
-GET http://localhost:3001/tasks/e47ac9de-af97-4e0c-b9c2-dee2689e205d
+GET http://localhost:3001/tasks/a603aa66-970f-4b6b-8bf3-b3457a589a74
 
 ### Get tasks by filter
 GET http://localhost:3001/tasks?filter=PENDING
 
 ### Get tasks by user id
-GET http://localhost:3001/tasks/user/0aa5fc14-8077-4981-a381-e5c068be9ef6
+GET http://localhost:3001/tasks/user/12345678
 
 ### Create task
 POST http://localhost:3001/tasks
@@ -16,19 +16,18 @@ Content-Type: application/json
 
 {
   "title": "Complete project documentation",
-  "description": "Write comprehensive documentation for the Task Manager API",
-  "status": "PENDING",
-  "userId": "0aa5fc14-8077-4981-a381-e5c068be9ef6"
+  "description": "Write comprehensive documentation for the Task Manager API"
 }
 
 
 ### Update task
-PUT http://localhost:3001/tasks/e47ac9de-af97-4e0c-b9c2-dee2689e205d
+PUT http://localhost:3001/tasks/a603aa66-970f-4b6b-8bf3-b3457a589a74
 Content-Type: application/json
 
 {
-  "status": "DONE"
+  "status": "PENDING",
+  "userId": 1234567
 }
 
 ### Delete task
-DELETE http://localhost:3001/tasks/e47ac9de-af97-4e0c-b9c2-dee2689e205d
+DELETE http://localhost:3001/tasks/a603aa66-970f-4b6b-8bf3-b3457a589a74
