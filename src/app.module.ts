@@ -7,6 +7,8 @@ import { User } from './domain/entities/user.entity';
 import { Task } from './domain/entities/task.entity';
 import { UserController } from './infrastructure/adapters/web/user.controller';
 import { TaskController } from './infrastructure/adapters/web/task.controller';
+import { UserModule } from './infrastructure/adapters/persistence/user.module';
+import { TaskModule } from './infrastructure/adapters/persistence/task.module';
 
 @Module({
   imports: [
@@ -28,8 +30,10 @@ import { TaskController } from './infrastructure/adapters/web/task.controller';
       }),
       inject: [ConfigService],
     }),
+    UserModule,
+    TaskModule,
   ],
-  controllers: [AppController, UserController, TaskController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
