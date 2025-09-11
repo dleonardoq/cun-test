@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './domain/entities/user.entity';
 import { Task } from './domain/entities/task.entity';
+import { UserController } from './infrastructure/adapters/web/user.controller';
+import { TaskController } from './infrastructure/adapters/web/task.controller';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { Task } from './domain/entities/task.entity';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController, TaskController],
   providers: [AppService],
 })
 export class AppModule {}
