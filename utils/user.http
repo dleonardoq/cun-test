@@ -1,0 +1,18 @@
+### Entry point
+GET http://localhost:3001/
+
+### Get all users
+GET http://localhost:3001/users
+
+### Get user by id
+GET http://localhost:3001/users/0aa5fc14-8077-4981-a381-e5c068be9ef6
+
+
+### Create user
+POST http://localhost:3001/users
+Content-Type: application/json
+
+{
+  "name": "Leonardo Quevedo",
+  "email": "leo.quevedo@gmail.com"
+}
