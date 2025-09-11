@@ -5,6 +5,7 @@ import { Task } from '../../domain/entities/task.entity';
 import { CreateTaskDto } from '../../shared/dtos/create-task.dto';
 import { UpdateTaskDto } from '../../shared/dtos/update-task.dto';
 import { TaskFilterDto } from '../../shared/dtos/task-filter.dto';
+import { TaskStatus } from 'src/shared/enums/task-status.enum';
 
 @Injectable()
 export class TaskUseCases {
@@ -14,15 +15,18 @@ export class TaskUseCases {
   ) {}
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const user = await this.userRepository.findById(createTaskDto.userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (createTaskDto.userId) {
+      const user = await this.userRepository.findById(createTaskDto.userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
     }
 
     const taskData = {
       ...createTaskDto,
       dueDate: createTaskDto.dueDate ? new Date(createTaskDto.dueDate) : null,
-    };
+      status: !createTaskDto.userId ? TaskStatus.UNNASSIGNED : createTaskDto.status
+    }
 
     return await this.taskRepository.create(taskData);
   }
@@ -52,6 +56,13 @@ export class TaskUseCases {
     const task = await this.taskRepository.findById(id);
     if (!task) {
       throw new NotFoundException('Task not found');
+    }
+
+    if (updateTaskDto.userId) {
+      const user = await this.userRepository.findById(updateTaskDto.userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
     }
 
     const updateData = {
