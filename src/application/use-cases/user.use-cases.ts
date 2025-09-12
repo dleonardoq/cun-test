@@ -59,6 +59,7 @@ export class UserUseCases {
     // Update user properties
     if (updateUserDto.email) user.email = updateUserDto.email
     if (updateUserDto.name) user.name = updateUserDto.name
+    if (updateUserDto.identifyNumber) user.identifyNumber = updateUserDto.identifyNumber
 
     return await this.userRepository.update(id, user)
   }
