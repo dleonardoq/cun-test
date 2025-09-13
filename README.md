@@ -182,7 +182,7 @@ GET /tasks?filter=PENDING
 ```
 
 **Query Parameters:**
-- `filter`: Filter by task status (`PENDING`, `IN_PROGRESS`, `DONE`)
+- `filter`: Filter by task status (`PENDING`, `IN_PROGRESS`, `DONE`, `UNNASSIGNED`)
 
 #### Get Tasks by User Identify Number
 ```http
@@ -221,6 +221,7 @@ POST /tasks/{id}/restore
 - `PENDING`: Task is created but not started
 - `IN_PROGRESS`: Task is currently being worked on
 - `DONE`: Task is completed
+- `UNNASSIGNED`: Task is not assigned to any user
 
 ### Error Responses
 
