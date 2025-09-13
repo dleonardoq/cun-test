@@ -1,4 +1,4 @@
-import { TaskStatus } from "src/shared/enums/task-status.enum";
+import { TaskStatus } from "../../shared/enums/task-status.enum";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { User } from "./user.entity";
 
