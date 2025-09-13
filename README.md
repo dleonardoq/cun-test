@@ -8,33 +8,27 @@ This project implements **Hexagonal Architecture** (also known as Ports and Adap
 
 ```
 src/
-├── domain/                 # Business entities and repository interfaces
-│   ├── entities/          # Domain entities (User, Task)
-│   └── repositories/      # Repository interfaces
-├── application/           # Business logic and use cases
-│   ├── dtos/             # Data Transfer Objects with validation
-│   └── services/         # Application services
-└── infrastructure/        # External concerns (DB, HTTP, etc.)
-    ├── controllers/      # HTTP controllers
-    ├── repositories/     # Repository implementations
-    ├── modules/         # Dependency injection modules
-    └── filters/         # Exception filters
+├── domain/                    # Business entities and ports
+│   ├── entities/             # Domain entities (User, Task)
+│   └── ports/               # Repository interfaces (ports)
+├── application/              # Business logic and use cases
+│   └── use-cases/           # Application use cases
+├── infrastructure/           # External concerns (DB, HTTP, etc.)
+│   └── adapters/            # External adapters
+│       ├── web/             # HTTP controllers
+│       └── persistence/     # Repository implementations & modules
+├── shared/                   # Shared components
+│   ├── dtos/               # Data Transfer Objects with validation
+│   └── enums/              # Enumerations (TaskStatus)
+├── app.module.ts            # Root application module
+└── main.ts                  # Application entry point
 ```
-
-### Key Design Decisions
-
-- **Hexagonal Architecture**: Separates business logic from external concerns
-- **SOLID Principles**: Each class has a single responsibility with proper dependency injection
-- **Repository Pattern**: Abstracts data access through interfaces
-- **DTO Validation**: Input validation using class-validator decorators
-- **Soft Delete**: Tasks are marked as deleted rather than physically removed
-- **Global Exception Handling**: Consistent error responses across the API
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - pnpm
 - Docker and Docker Compose
 
@@ -43,7 +37,7 @@ src/
 1. **Clone the repository**
 ```bash
 git clone <repository-url>
-cd task-manager-api
+cd test-cun
 ```
 
 2. **Install dependencies**
@@ -57,45 +51,27 @@ cp .env.example .env
 # Edit .env with your configuration if needed
 ```
 
-4. **Start the application with Docker**
+
+4. **Start the application with Docker in development mode**
 ```bash
-docker-compose up --build
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-The API will be available at `http://localhost:3000`
+The API will be available at `http://localhost:3001`
 
-### Development Setup
-
-For local development without Docker:
-
-1. **Start PostgreSQL database**
+5. **Start the application with Docker**
 ```bash
-docker-compose up postgres -d
+docker compose up --build
 ```
 
-2. **Run the application in development mode**
-```bash
-pnpm run start:dev
-```
+The API will be available at `http://localhost:3001`
 
-### Running Tests
-
-```bash
-# Unit tests
-pnpm run test
-
-# Test coverage
-pnpm run test:cov
-
-# Watch mode
-pnpm run test:watch
-```
 
 ## 📚 API Documentation
 
 ### Base URL
 ```
-http://localhost:3000
+http://localhost:3001
 ```
 
 ### Users Endpoints
@@ -106,6 +82,7 @@ POST /users
 Content-Type: application/json
 
 {
+  "identifyNumber": 12345678,
   "email": "user@example.com",
   "name": "John Doe"
 }
@@ -115,6 +92,7 @@ Content-Type: application/json
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
+  "identifyNumber": 12345678,
   "email": "user@example.com",
   "name": "John Doe",
   "createdAt": "2024-01-15T10:30:00.000Z",
@@ -132,6 +110,7 @@ GET /users
 [
   {
     "id": "123e4567-e89b-12d3-a456-426614174000",
+    "identifyNumber": 12345678,
     "email": "user@example.com",
     "name": "John Doe",
     "createdAt": "2024-01-15T10:30:00.000Z",
@@ -140,25 +119,26 @@ GET /users
 ]
 ```
 
-#### Get User by ID
+#### Get User by Identify Number
 ```http
-GET /users/{id}
+GET /users/{identifyNumber}
 ```
 
 #### Update User
 ```http
-PUT /users/{id}
+PUT /users/{identifyNumber}
 Content-Type: application/json
 
 {
-  "name": "Jane Doe",
-  "email": "jane@example.com"
+  "identifyNumber": 12345678,
+  "name": "Leonardo Quevedo",
+  "email": "leo.quevedo@gmail.com"
 }
 ```
 
 #### Delete User
 ```http
-DELETE /users/{id}
+DELETE /users/{identifyNumber}
 ```
 
 **Response (204 No Content)**
@@ -172,9 +152,7 @@ Content-Type: application/json
 
 {
   "title": "Complete project documentation",
-  "description": "Write comprehensive README and API docs",
-  "dueDate": "2024-12-31T23:59:59.000Z",
-  "userId": "123e4567-e89b-12d3-a456-426614174000"
+  "description": "Write comprehensive documentation for the Task Manager API"
 }
 ```
 
@@ -184,11 +162,12 @@ Content-Type: application/json
   "id": "456e7890-e89b-12d3-a456-426614174001",
   "title": "Complete project documentation",
   "description": "Write comprehensive README and API docs",
-  "status": "PENDING",
+  "status": "UNNASSIGNED",
   "dueDate": "2024-12-31T23:59:59.000Z",
-  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "userId": 12345678,
   "user": {
     "id": "123e4567-e89b-12d3-a456-426614174000",
+    "identifyNumber": null,
     "email": "user@example.com",
     "name": "John Doe"
   },
@@ -199,16 +178,15 @@ Content-Type: application/json
 
 #### Get All Tasks (with optional filters)
 ```http
-GET /tasks?status=PENDING&userId=123e4567-e89b-12d3-a456-426614174000
+GET /tasks?filter=PENDING
 ```
 
 **Query Parameters:**
-- `status`: Filter by task status (`PENDING`, `IN_PROGRESS`, `DONE`)
-- `userId`: Filter by user ID
+- `filter`: Filter by task status (`PENDING`, `IN_PROGRESS`, `DONE`)
 
-#### Get Tasks by User ID
+#### Get Tasks by User Identify Number
 ```http
-GET /tasks/user/{userId}?status=IN_PROGRESS
+GET /tasks/user/{identifyNumber}
 ```
 
 #### Get Task by ID
@@ -222,9 +200,8 @@ PUT /tasks/{id}
 Content-Type: application/json
 
 {
-  "title": "Updated task title",
-  "status": "IN_PROGRESS",
-  "description": "Updated description"
+  "status": "PENDING",
+  "userId": 1234567
 }
 ```
 
@@ -275,17 +252,23 @@ The project includes comprehensive unit tests for:
 src/
 ├── application/services/
 │   └── user.service.spec.ts
-└── infrastructure/controllers/
+└── infrastructure/adapters/web/controllers/
     └── task.controller.spec.ts
 ```
 
-### Running Specific Tests
+### Running Tests
 ```bash
-# Run specific test file
-pnpm test user.service.spec.ts
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
 
 # Run tests with coverage
-pnpm run test:cov
+pnpm test:cov
+
+# Run e2e tests
+pnpm test:e2e
 ```
 
 ## 🐳 Docker Configuration
@@ -347,12 +330,25 @@ docker compose -f docker-compose.dev.yml logs app
 ### Project Structure
 ```
 ├── src/
-│   ├── domain/           # Business entities and interfaces
-│   ├── application/      # Use cases and DTOs
-│   ├── infrastructure/   # External adapters
-│   ├── main.ts          # Application entry point
-│   └── app.module.ts    # Root module
-├── docker-compose.yml   # Docker services configuration
-├── Dockerfile          # Application container
-└── package.json        # Dependencies and scripts
+│   ├── domain/              # Business entities and ports
+│   │   ├── entities/        # Domain entities (User, Task)
+│   │   └── ports/          # Repository interfaces
+│   ├── application/         # Use cases and business logic
+│   │   └── use-cases/      # Application use cases
+│   ├── infrastructure/      # External adapters
+│   │   └── adapters/       # Infrastructure adapters
+│   │       ├── web/        # HTTP controllers
+│   │       └── persistence/ # Database repositories & modules
+│   ├── shared/             # Shared components
+│   │   ├── dtos/          # Data Transfer Objects
+│   │   └── enums/         # Enumerations
+│   ├── main.ts            # Application entry point
+│   └── app.module.ts      # Root module
+├── test/                   # E2E tests
+├── utils/                  # Utility files (SQL, HTTP requests)
+├── docker-compose.yml      # Docker services configuration
+├── docker-compose.dev.yml  # Development Docker configuration
+├── Dockerfile             # Application container
+├── Dockerfile.dev         # Development container
+└── package.json           # Dependencies and scripts
 ```
