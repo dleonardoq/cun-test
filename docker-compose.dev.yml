@@ -27,7 +27,7 @@ services:
       - task-manager-network
     restart: unless-stopped
     # Comando para desarrollo con hot reload
-    command: npm run start:dev
+    command: pnpm run start:dev
 
   postgres:
     image: postgres:15-alpine

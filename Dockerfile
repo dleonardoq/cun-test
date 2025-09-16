@@ -5,19 +5,15 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies using npm with legacy peer deps to resolve conflicts
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN pnpm run build
+RUN npm run build
 
 # Production stage
 FROM node:22-alpine AS production
@@ -26,13 +22,9 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod
+# Install only production dependencies using npm with legacy peer deps
+RUN npm install --production --legacy-peer-deps
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
